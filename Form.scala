@@ -30,29 +30,32 @@ class Form {
 
 		case 0 => { matrix = Array(Array(true), Array(true), Array(true), Array(true)) }
 
-		case 1 => { matrix = Array( Array(true, true),
-					    Array(true, true) )
+		case 1 => { matrix = Array( Array(true,  true),
+					    Array(true,  true) )
 			  }
 
-		case 2 => { matrix = Array( Array(true, true, true),
-					    Array(false, true, false) )
+		case 2 => { matrix = Array( Array(false, true),
+					    Array(false, true),
+					    Array(true,  true) )
 			  }
 
-		case 3 => { matrix = Array( Array(true, true, true),
-				 	    Array(true, false, false) )
+		case 3 => { matrix = Array( Array(true, false),
+				 	    Array(true, false),
+				 	    Array(true,  true) )
 			  }
 
-		case 4 => { matrix = Array( Array(true, true, true),
-				            Array(false, false, true) )
+		case 4 => { matrix = Array( Array(false, true),
+				            Array(true,  true),
+				            Array(false, true) )
 			  }
 
 		case 5 => { matrix = Array( Array(false, true),
-					    Array(true, true),
+					    Array(true,  true),
 					    Array(true, false) )
 			  }
 
 		case 6 => { matrix = Array( Array(true, false),
-					    Array(true, true),
+					    Array(true,  true),
 					    Array(false, true) )
 			  }
 	}
