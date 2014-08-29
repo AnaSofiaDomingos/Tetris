@@ -25,7 +25,7 @@ class Map {
 		for (i <- 0 until f.matrix.size)
 			for (j <- 0 until f.matrix(i).size)
 				if (f.matrix(i)(j))
-					grid(i+f.position(0))(j+f.position(1)) = f.matrix(i)(j)
+					grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1)) = f.matrix(i)(j) 
 
 	}
 
@@ -70,7 +70,6 @@ class Map {
 		clear(f)
 		f.down
 		draw(f)
-		display
 		
 	}
 
@@ -86,14 +85,5 @@ class Map {
 	/** Constructor */
 
 	for (k <- 0 until height) { grid = grid ++ Array(Array.fill(width){false}) }
-
-}
-
-object MapTest extends App {
-
-	val m = new Map
-	val f = m.invoke
-	m.display
-	m.down(f)
 
 }
