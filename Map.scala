@@ -11,11 +11,41 @@ class Map {
 
 		val f = new Form
 		for (i <- 0 until f.matrix.size)
-			for (j <- 0 until f.matrix(i).size) 
-				grid(i)(j+f.position(0)) = f.matrix(i)(j)
+			for (j <- 0 until f.matrix(i).size)
+				if (f.matrix(i)(j))
+					grid(i)(j+f.position(1)) = f.matrix(i)(j)
 
 		f
 
+	}
+
+	/** Places a shape at its saved position */
+	def draw(f: Form): Unit = {
+
+		for (i <- 0 until f.matrix.size)
+			for (j <- 0 until f.matrix(i).size)
+				if (f.matrix(i)(j))
+					grid(i+f.position(0))(j+f.position(1)) = f.matrix(i)(j)
+
+	}
+
+	/** Clear the shape */
+	def clear(f: Form): Unit = {
+
+		var fi = 0
+		for (i <- (f.position(0)-f.dimension(0)+1) to f.position(0)) {
+
+			var fj = 0
+			for (j <- f.position(1) until (f.position(1)+f.dimension(1))) {
+
+				if (grid(i)(j) && f.matrix(fi)(fj)) grid(i)(j) = false
+				fj = fj + 1
+
+			} 
+
+			fi = fi + 1
+
+		}
 	}
 
 	/** Binary display */
@@ -34,13 +64,15 @@ class Map {
 
 	}
 
-	/** Moves the current shape downwards 
+	/** Moves the current shape downwards */
 	def down(f: Form): Unit = {
-		
-		for (i <- 
+
+		clear(f)
 		f.down
+		draw(f)
+		display
 		
-	}*/
+	}
 
 	/** Checks if the shape has reached the bottom of the grid */
 	def isBottom(f: Form): Boolean = ???
@@ -54,5 +86,14 @@ class Map {
 	/** Constructor */
 
 	for (k <- 0 until height) { grid = grid ++ Array(Array.fill(width){false}) }
+
+}
+
+object MapTest extends App {
+
+	val m = new Map
+	val f = m.invoke
+	m.display
+	m.down(f)
 
 }
