@@ -5,8 +5,8 @@ class Form {
 
 	private var mat = Array[Array[Boolean]]()
 	private val max    = 7
-	private var posx   = 4
-	private var posy   = 0
+	private var posx   = 0
+	private var posy   = 4
 
 	/** 90° clockwise */
 	def rotate: Unit = {
@@ -51,9 +51,10 @@ class Form {
 
 	/** Setters */
 
-	def down: Unit  = { posy = posy + 1 }
-	def left: Unit  = { posx = posx - 1 }
-	def right: Unit = { posx = posx + 1 }
+	def down: Unit  = { posx = posx + 1 }
+	def left: Unit  = { posy = posy - 1 }
+	def right: Unit = { posy = posy + 1 }
+
 
 	/** Constructor */
 
@@ -61,39 +62,39 @@ class Form {
 
 	rnd match {
 
-		case 0 => { mat = Array( Array(true), Array(true), Array(true), Array(true)) }
+		case 0 => { mat = Array(Array(true), Array(true), Array(true), Array(true)) }
 
 		case 1 => { mat = Array( Array(true,  true),
-					 Array(true,  true) )
+					    Array(true,  true) )
 			  }
 
 		case 2 => { mat = Array( Array(false, true),
-					 Array(false, true),
-					 Array(true,  true) )
+					    Array(false, true),
+					    Array(true,  true) )
 			  }
 
 		case 3 => { mat = Array( Array(true, false),
-				 	 Array(true, false),
-				 	 Array(true,  true) )
+				 	    Array(true, false),
+				 	    Array(true,  true) )
 			  }
 
 		case 4 => { mat = Array( Array(false, true),
-				         Array(true,  true),
-				         Array(false, true) )
+				            Array(true,  true),
+				            Array(false, true) )
 			  }
 
 		case 5 => { mat = Array( Array(false, true),
-					 Array(true,  true),
-					 Array(true, false) )
+					    Array(true,  true),
+					    Array(true, false) )
 			  }
 
-		case 6 => { mat = Array( Array(true, false),
-					 Array(true,  true),
-					 Array(false, true) )
+		case 6 => { mat = Array( Array(true,  false),
+					    Array(true,  true),
+					    Array(false, true) )
 			  }
 
 	}
 
-	posy = mat.size - 1
+	posx = mat.size - 1
 
 }
