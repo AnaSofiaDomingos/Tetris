@@ -73,6 +73,33 @@ class Map {
 		
 	}
 
+	// Moves the current shape downwards
+	def right(f: Piece): Unit = {
+
+		clear(f)
+		f.right
+		draw(f)
+		
+	}
+	
+	// Moves the current shape downwards
+	def left(f: Piece): Unit = {
+
+		clear(f)
+		f.left
+		draw(f)
+		
+	}
+
+	// Moves the current shape downwards
+	def rotate(f: Piece): Unit = {
+
+		clear(f)
+		f.rotate
+		draw(f)
+		
+	}
+
 	// Checks if the shape has reached its lowest possible point
 	def isBottom(f: Piece): Boolean = ???
 
