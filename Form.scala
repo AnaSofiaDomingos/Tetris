@@ -3,69 +3,37 @@ import Array._
 
 class Form {
 
-	private var matrix = Array[Array[Boolean]]()
-	private val max = 7
+	private var mat = Array[Array[Boolean]]()
+	private val max    = 7
+	private var posx   = 4
+	private var posy   = 0
 
+	/** 90° clockwise */
 	def rotate: Unit = {
 
 		var newarr = Array[Array[Boolean]]()
 
-		for (j <- 0 until matrix(0).size) {
+		for (j <- 0 until mat(0).size) {
 
 			var sub = Array[Boolean]()
 
-			for (i <- (matrix.size-1) to 0 by -1) {	sub = sub ++ Array(matrix(i)(j))}
+			for (i <- (mat.size-1) to 0 by -1) {	sub = sub ++ Array(mat(i)(j))}
 
 			newarr = newarr ++ Array(sub)
 
 		}
 
-		matrix = newarr
+		mat = newarr
 				
 	}
 
-	var rnd = Math.round(new Random().nextDouble * (max-1))
-
-	rnd match {
-
-		case 0 => { matrix = Array(Array(true), Array(true), Array(true), Array(true)) }
-
-		case 1 => { matrix = Array( Array(true,  true),
-					    Array(true,  true) )
-			  }
-
-		case 2 => { matrix = Array( Array(false, true),
-					    Array(false, true),
-					    Array(true,  true) )
-			  }
-
-		case 3 => { matrix = Array( Array(true, false),
-				 	    Array(true, false),
-				 	    Array(true,  true) )
-			  }
-
-		case 4 => { matrix = Array( Array(false, true),
-				            Array(true,  true),
-				            Array(false, true) )
-			  }
-
-		case 5 => { matrix = Array( Array(false, true),
-					    Array(true,  true),
-					    Array(true, false) )
-			  }
-
-		case 6 => { matrix = Array( Array(true, false),
-					    Array(true,  true),
-					    Array(false, true) )
-			  }
-	}
-
+	/** Binary display */
 	def display: Unit = {
 
-		for (i <- 0 until matrix.size) {
-			for (j <- 0 until matrix(i).size) {
+		for (i <- 0 until mat.size) {
+			for (j <- 0 until mat(i).size) {
 
-				val x = if (matrix(i)(j)) 1 else 0
+				val x = if (mat(i)(j)) 1 else 0
 				print(" " + x)
 
 			}
@@ -74,5 +42,58 @@ class Form {
 		println
 
 	}
+
+	/** Getters */
+
+	def matrix:    Array[Array[Boolean]] = mat
+	def position:  Array[Int]	     = Array(posx, posy)
+	def dimension: Array[Int]            = Array(mat.size, mat(0).size)
+
+	/** Setters */
+
+	def down: Unit  = { posy = posy + 1 }
+	def left: Unit  = { posx = posx - 1 }
+	def right: Unit = { posx = posx + 1 }
+
+	/** Constructor */
+
+	var rnd = Math.round(new Random().nextDouble * (max-1))
+
+	rnd match {
+
+		case 0 => { mat = Array( Array(true), Array(true), Array(true), Array(true)) }
+
+		case 1 => { mat = Array( Array(true,  true),
+					 Array(true,  true) )
+			  }
+
+		case 2 => { mat = Array( Array(false, true),
+					 Array(false, true),
+					 Array(true,  true) )
+			  }
+
+		case 3 => { mat = Array( Array(true, false),
+				 	 Array(true, false),
+				 	 Array(true,  true) )
+			  }
+
+		case 4 => { mat = Array( Array(false, true),
+				         Array(true,  true),
+				         Array(false, true) )
+			  }
+
+		case 5 => { mat = Array( Array(false, true),
+					 Array(true,  true),
+					 Array(true, false) )
+			  }
+
+		case 6 => { mat = Array( Array(true, false),
+					 Array(true,  true),
+					 Array(false, true) )
+			  }
+
+	}
+
+	posy = mat.size - 1
 
 }
