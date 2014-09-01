@@ -10,8 +10,8 @@ class Map {
 	def invoke: Piece = {
 
 		val f = new Piece
-		for (i <- 0 until f.matrix.size)
-			for (j <- 0 until f.matrix(i).size)
+		for (i <- 0 until f.dimension(0))
+			for (j <- 0 until f.dimension(1))
 				if (f.matrix(i)(j))
 					grid(i)(j+f.position(1)) = f.matrix(i)(j)
 
@@ -22,8 +22,8 @@ class Map {
 	// Places a shape at its saved position
 	def draw(f: Piece): Unit = {
 
-		for (i <- 0 until f.matrix.size)
-			for (j <- 0 until f.matrix(i).size)
+		for (i <- 0 until f.dimension(0))
+			for (j <- 0 until f.dimension(1))
 				if (f.matrix(i)(j))
 					grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1)) = f.matrix(i)(j) 
 
@@ -100,24 +100,21 @@ class Map {
 		
 	}
 
-	// Checks if the shape still can move 
+	// Checks if the piece can move downwards
 	def canGoDown(f: Piece): Boolean = {
 
-		if (f.position(0) == (this.height - 1))
-		
-			val ret = false
+		var ret = true
+
+		if (f.position(0) == (this.height - 1)) ret = false
 			
 		else {
-			
-			var ret = true
 		
-			for (j <- 0 until f.matrix(0).size) {
-		
-				var last1 = 0
-		
-				for (i <- 0 until f.matrix.size)
-					if (f.matrix(i)(j)) last1 = j
-		
+			for (j <- 0 until f.dimension(1)) {
+	
+				var last1 = 0	
+				for (i <- 0 until f.dimension(0))
+					if (f.matrix(i)(j)) last1 = i 
+
 				if (grid(last1+f.position(0)-f.dimension(0)+2)(j+f.position(1)))
 					ret = false
 		
@@ -128,6 +125,61 @@ class Map {
 		ret
 
 	}
+
+	// Checks if the piece can move right
+	def canGoRight(f: Piece): Boolean = {
+
+		var ret = true
+
+		if ((f.position(1) + f.dimension(1)) == this.width) ret = false
+
+		else {
+
+			for (i <- 0 until f.dimension(0)) {
+
+				var last1 = 0
+				for (j <- 0 until f.dimension(1))
+					if (f.matrix(i)(j)) last1 = j
+
+				if (grid(i+f.position(0)-f.dimension(0)+1)(f.position(1)+last1+1))
+					ret = false
+
+			}
+
+		}
+
+		ret
+
+
+	}
+
+	// Checks if the piece can move left
+	def canGoLeft(f: Piece): Boolean = {
+
+		var ret = true
+
+		if (f.position(1) == 0) ret = false
+
+		else {
+			
+			for (i <- 0 until f.dimension(0)) {
+	
+				var first1 = 0
+				while (!f.matrix(i)(first1)) first1 = first1 + 1
+				
+				if (grid(i+f.position(0)-f.dimension(0)+1)(f.position(1)+first1-1))
+					ret = false
+
+			}
+
+		}
+
+		ret
+
+	}
+
+	// Checks if the piece can rotate (clockwise)
+	def canRotate(f: Piece): Boolean = ???
 
 	// Checks if a whole row is full
 	def isFull(r: Int): Boolean = (0 until grid(r).size).forall( grid(r)(_) ) 
