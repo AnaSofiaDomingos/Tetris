@@ -5,7 +5,6 @@ object Grid2 extends SimpleSwingApplication{
 	def top = new MainFrame{ 
 		title = "Tetris"
 		preferredSize = new Dimension(600, 800)
-		val bouton = new  Button { text = "MonBouton" }
 		contents = new GridPanel(22,10){
 
 			val j:Int = 22
