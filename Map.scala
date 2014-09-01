@@ -6,20 +6,10 @@ class Map {
 	private val height  = 22
 	private val width   = 10
 
-	// Places a random shape at the top of the grid
-	def invoke: Piece = {
+	// Creates a random piece
+	def invoke: Piece = new Piece
 
-		val f = new Piece
-		for (i <- 0 until f.dimension(0))
-			for (j <- 0 until f.dimension(1))
-				if (f.matrix(i)(j))
-					grid(i)(j+f.position(1)) = f.matrix(i)(j)
-
-		f
-
-	}
-
-	// Places a shape at its saved position
+	// Places a piece at its saved position
 	def draw(f: Piece): Unit = {
 
 		for (i <- 0 until f.dimension(0))
@@ -29,7 +19,7 @@ class Map {
 
 	}
 
-	// Clear the shape
+	// Clear the piece
 	def clear(f: Piece): Unit = {
 
 		var fi = 0
