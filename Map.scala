@@ -100,8 +100,26 @@ class Map {
 		
 	}
 
-	// Checks if the shape has reached its lowest possible point
-	def isBottom(f: Piece): Boolean = ???
+	// Checks if the shape still can move 
+	def canGoDown(f: Piece): Boolean = {
+
+		var ret = true
+	
+		for (j <- 0 until f.matrix(0).size) {
+	
+			var last1 = 0
+	
+			for (i <- 0 until f.matrix.size)
+				if (f.matrix(i)(j)) last1 = j
+	
+			if (grid(last1+f.position(0)-f.dimension(0)+2)(j+f.position(1)))
+				ret = false
+	
+		}
+
+		ret
+
+	}
 
 	// Checks if a whole row is full
 	def isFull(r: Int): Boolean = (0 until grid(r).size).forall( grid(r)(_) ) 
