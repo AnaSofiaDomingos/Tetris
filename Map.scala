@@ -204,7 +204,7 @@ class Map {
 	}
 
 	// Checks the grid and suppresses full rows
-	def clear: Unit = for (i <- 0 until this.height) if (isFull(i)) removeRow(i)
+	def clean: Unit = for (i <- 0 until this.height) if (isFull(i)) removeRow(i)
 
 	// Constructor
 	for (k <- 0 until height) { grid = grid ++ Array(Array.fill(width){false}) }
