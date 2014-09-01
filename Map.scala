@@ -179,7 +179,23 @@ class Map {
 	}
 
 	// Checks if the piece can rotate (clockwise)
-	def canRotate(f: Piece): Boolean = ???
+	def canRotate(f: Piece): Boolean = {
+		
+		clear(f)
+		f.rotate
+
+		var ret = true
+
+		for (i <- 0 until f.dimension(0)) 
+			for (j <- 0 until f.dimension(1)) 
+				if ((f.matrix(i)(j)) && (grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1))))
+					ret = false
+
+		for (k <- 0 until 3) f.rotate
+		
+		ret
+
+	}
 
 	// Checks if a whole row is full
 	def isFull(r: Int): Boolean = (0 until grid(r).size).forall( grid(r)(_) ) 
