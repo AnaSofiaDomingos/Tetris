@@ -6,10 +6,10 @@ class Map {
 	private val height  = 22
 	private val width   = 10
 
-	/** Places a random shape at the top of the grid */
-	def invoke: Form = {
+	// Places a random shape at the top of the grid
+	def invoke: Piece = {
 
-		val f = new Form
+		val f = new Piece
 		for (i <- 0 until f.matrix.size)
 			for (j <- 0 until f.matrix(i).size)
 				if (f.matrix(i)(j))
@@ -19,18 +19,18 @@ class Map {
 
 	}
 
-	/** Places a shape at its saved position */
-	def draw(f: Form): Unit = {
+	// Places a shape at its saved position
+	def draw(f: Piece): Unit = {
 
 		for (i <- 0 until f.matrix.size)
 			for (j <- 0 until f.matrix(i).size)
 				if (f.matrix(i)(j))
-					grid(i+f.position(0))(j+f.position(1)) = f.matrix(i)(j)
+					grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1)) = f.matrix(i)(j) 
 
 	}
 
-	/** Clear the shape */
-	def clear(f: Form): Unit = {
+	// Clear the shape
+	def clear(f: Piece): Unit = {
 
 		var fi = 0
 		for (i <- (f.position(0)-f.dimension(0)+1) to f.position(0)) {
@@ -48,10 +48,10 @@ class Map {
 		}
 	}
 
-	/** Binary display */
+	// Binary display
 	def display: Unit = {
 
-		for (i <- 0 until grid.size) {
+		for (i <- 0 until grid.size) { 
 			for (j <- 0 until grid(i).size) {
 				
 				val x = if (grid(i)(j)) 1 else 0
@@ -64,36 +64,63 @@ class Map {
 
 	}
 
-	/** Moves the current shape downwards */
-	def down(f: Form): Unit = {
+	// Moves the current shape downwards
+	def down(f: Piece): Unit = {
 
 		clear(f)
 		f.down
 		draw(f)
-		display
 		
 	}
 
-	/** Checks if the shape has reached the bottom of the grid */
-	def isBottom(f: Form): Boolean = ???
+	// Moves the current shape downwards
+	def right(f: Piece): Unit = {
 
-	/** Checks if a whole row is full */
-	def isFull(r: Int): Boolean = ???
+		clear(f)
+		f.right
+		draw(f)
+		
+	}
+	
+	// Moves the current shape downwards
+	def left(f: Piece): Unit = {
 
-	/** Deletes a row and moves the rest downwards */
-	def removeRow(r: Int): Unit = ???
+		clear(f)
+		f.left
+		draw(f)
+		
+	}
 
-	/** Constructor */
+	// Moves the current shape downwards
+	def rotate(f: Piece): Unit = {
 
+		clear(f)
+		f.rotate
+		draw(f)
+		
+	}
+
+	// Checks if the shape has reached its lowest possible point
+	def isBottom(f: Piece): Boolean = ???
+
+	// Checks if a whole row is full
+	def isFull(r: Int): Boolean = (0 until grid(r).size).forall( grid(r)(_) ) 
+
+	// Deletes a row and moves the rest downwards
+	def removeRow(r: Int): Unit = {
+
+		for (i <- r to 1 by -1) {
+
+			for (j <- 0 until grid(i).size)
+				grid(i)(j) = grid(i-1)(j)
+
+		}
+		grid(0) = Array.fill(width){false}
+
+	}
+
+	// Constructor
 	for (k <- 0 until height) { grid = grid ++ Array(Array.fill(width){false}) }
 
 }
 
-object MapTest extends App {
-
-	val m = new Map
-	val f = m.invoke
-	m.display
-	m.down(f)
-
-}
