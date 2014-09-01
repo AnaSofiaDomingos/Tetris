@@ -19,6 +19,20 @@ class Map {
 
 	}
 
+	// Checks if the piece is playable (game not over)
+	def isValid(f: Piece): Boolean = {
+
+		var ret = true
+
+		for (i <- 0 until f.dimension(0)) 
+			for (j <- 0 until f.dimension(1)) 
+				if ((f.matrix(i)(j)) && (grid(i+f.position(0))(j+f.position(1))))
+					ret = false
+
+		ret
+
+	}
+
 	// Clear the piece
 	def clear(f: Piece): Unit = {
 
