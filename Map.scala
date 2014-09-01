@@ -103,20 +103,28 @@ class Map {
 	// Checks if the shape still can move 
 	def canGoDown(f: Piece): Boolean = {
 
-		var ret = true
-	
-		for (j <- 0 until f.matrix(0).size) {
-	
-			var last1 = 0
-	
-			for (i <- 0 until f.matrix.size)
-				if (f.matrix(i)(j)) last1 = j
-	
-			if (grid(last1+f.position(0)-f.dimension(0)+2)(j+f.position(1)))
-				ret = false
-	
+		if (f.position(0) == (this.height - 1))
+		
+			val ret = false
+			
+		else {
+			
+			var ret = true
+		
+			for (j <- 0 until f.matrix(0).size) {
+		
+				var last1 = 0
+		
+				for (i <- 0 until f.matrix.size)
+					if (f.matrix(i)(j)) last1 = j
+		
+				if (grid(last1+f.position(0)-f.dimension(0)+2)(j+f.position(1)))
+					ret = false
+		
+			}
+			
 		}
-
+		
 		ret
 
 	}
