@@ -1,14 +1,14 @@
 import java.util.Random
 import Array._
 
-class Form {
+class Piece {
 
-	private var mat = Array[Array[Boolean]]()
-	private val max    = 7
-	private var posx   = 0
-	private var posy   = 4
+	private var mat  = Array[Array[Boolean]]()
+	private val max  = 7
+	private var posx = 0
+	private var posy = 4
 
-	/** 90° clockwise */
+	// 90° clockwise
 	def rotate: Unit = {
 
 		var newarr = Array[Array[Boolean]]()
@@ -27,7 +27,7 @@ class Form {
 				
 	}
 
-	/** Binary display */
+	// Binary display
 	def display: Unit = {
 
 		for (i <- 0 until mat.size) {
@@ -43,54 +43,54 @@ class Form {
 
 	}
 
-	/** Getters */
+	// Getters 
 
 	def matrix:    Array[Array[Boolean]] = mat
 	def position:  Array[Int]	     = Array(posx, posy)
 	def dimension: Array[Int]            = Array(mat.size, mat(0).size)
 
-	/** Setters */
+	// Setters
 
 	def down: Unit  = { posx = posx + 1 }
 	def left: Unit  = { posy = posy - 1 }
 	def right: Unit = { posy = posy + 1 }
 
 
-	/** Constructor */
+	// Constructor
 
 	var rnd = Math.round(new Random().nextDouble * (max-1))
 
 	rnd match {
 
-		case 0 => { mat = Array(Array(true), Array(true), Array(true), Array(true)) }
+		case 0 => { mat = Array( Array(true), Array(true), Array(true), Array(true)) }
 
 		case 1 => { mat = Array( Array(true,  true),
-					    Array(true,  true) )
+					 Array(true,  true) )
 			  }
 
 		case 2 => { mat = Array( Array(false, true),
-					    Array(false, true),
-					    Array(true,  true) )
+					 Array(false, true),
+					 Array(true,  true) )
 			  }
 
 		case 3 => { mat = Array( Array(true, false),
-				 	    Array(true, false),
-				 	    Array(true,  true) )
+				 	 Array(true, false),
+				 	 Array(true,  true) )
 			  }
 
 		case 4 => { mat = Array( Array(false, true),
-				            Array(true,  true),
-				            Array(false, true) )
+				         Array(true,  true),
+				         Array(false, true) )
 			  }
 
 		case 5 => { mat = Array( Array(false, true),
-					    Array(true,  true),
-					    Array(true, false) )
+					 Array(true,  true),
+					 Array(true, false) )
 			  }
 
 		case 6 => { mat = Array( Array(true,  false),
-					    Array(true,  true),
-					    Array(false, true) )
+					 Array(true,  true),
+					 Array(false, true) )
 			  }
 
 	}
