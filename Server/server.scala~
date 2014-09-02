@@ -54,6 +54,7 @@ class Server(port:Int) extends Thread {
 
 	def ### = println("##################################################\n")
 
+	def Status() : Boolean = (this.isAlive && (NbClientConnect == 2 ))
 
 }
 

@@ -2,7 +2,7 @@ import java.io.IOException
 import java.net.ServerSocket
 import java.net.Socket
 
-object ServerSansThread extends App{
+object Server extends App{
 	import java.net.InetAddress
         val SAddress = InetAddress.getLocalHost();
         println("The server address is : "+SAddress ); 

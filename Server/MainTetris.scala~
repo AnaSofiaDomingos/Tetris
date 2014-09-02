@@ -1,0 +1,15 @@
+
+object MainTeris extends App {
+	val s = new Server(2014)
+	s.start
+
+	val c1 = new Client(2014)
+	println("c1 connected")
+	val c2 = new Client(2014)
+	println("c2 connected")
+		
+	
+	
+	
+}
+
