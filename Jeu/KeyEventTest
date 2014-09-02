@@ -10,21 +10,29 @@ import java.awt.event._
 object KeyEventTest extends SimpleSwingApplication {
   private var grid = new Map
   private var p = grid.invoke
+  val x:Int = 22
+  var y:Int = 10
+  //private var lastGrid = ofDim[Boolean](22,10)
 
   def top = new MainFrame {
 
       title = "Tetris"
-      preferredSize = new Dimension(600, 800)
-      var tabButtons = ofDim[Button](22,10)
 
-      contents = new GridPanel(22,10){
-        val x:Int = 22
-        var y:Int = 10
+      preferredSize = new Dimension(y*40, x*40)
+      var tabButtons = ofDim[Button](x,y)
+
+
+      contents = new GridPanel(x,y){
+
 
         for( i <- 0 until x){
           for( j <- 0 until y) {
             tabButtons(i)(j) = new Button()
             contents += tabButtons(i)(j)
+            tabButtons(i)(j).enabled = false
+            tabButtons(i)(j).borderPainted = false
+            tabButtons(i)(j).contentAreaFilled=false;
+            tabButtons(i)(j).opaque = true;
           }
         }
 
@@ -32,41 +40,73 @@ object KeyEventTest extends SimpleSwingApplication {
 
         listenTo(keys)
         reactions += {
-          case KeyPressed(_, Key.Right, _, _) =>
-            //label.text = "Space is down"
+          case KeyPressed(_, Key.Right, _, _) => {
             if (grid.canGoRight(p)) grid.right(p)
-            tabButtons(2)(4).background = Color.red
-            grid.display
-
-          case KeyPressed(_, Key.Left, _, _) =>
-            //label.text = "Space is up"
-            if (grid.canGoLeft(p)) grid.left(p)
-            grid.display
-          case KeyPressed(_, Key.Down, _, _) =>
-            if (grid.canGoDown(p)) grid.down(p)
+            TimerFunction
         }
+
+          case KeyPressed(_, Key.Left, _, _) => {
+            if (grid.canGoLeft(p)) grid.left(p)
+            TimerFunction
+        }
+
+          case KeyPressed(_, Key.Down, _, _) => {
+            if (grid.canGoDown(p)) grid.down(p)
+            RunningGame
+            TimerFunction
+            timer.restart()
+          }
+
+          case KeyPressed(_, Key.Up, _, _) => {
+            if (grid.canRotate(p)) grid.rotate(p)
+            TimerFunction
+
+          }
+        }
+
         focusable = true
         requestFocus
 
-        val timer=new javax.swing.Timer(1000, Swing.ActionListener(e =>
+        val timer=new javax.swing.Timer(500, Swing.ActionListener(e =>
         {
-          //RunningGame
-         // grid.display
+          RunningGame
+          TimerFunction
+       }))
+       timer.start()
+     }
 
-        }))
-        timer.start()
+    def TimerFunction: Unit = {
+
+      for( i <- 0 until x){
+        for( j <- 0 until y) {
+          tabButtons(i)(j).background = RefreshColors(i, j)
+          tabButtons(i)(j).borderPainted = grid.get(i,j) match { case 0 => false
+                                                                 case _ => true }
+        }
       }
-  }
-
-  def RunningGame(): Unit = {
-    //On check si on peut déscendre
-    if (grid.canGoDown(p))
-      grid.down(p)
-    else {
-      grid.clean
-      p = grid.invoke
     }
+ }
 
-  }
+ def RefreshColors(i: Int, j: Int): Color = grid.get(i,j) match {
+   //lastGrid = grid.getGrid
+   case 0 => null
+   case 1 => Color.red
+   case 2 => Color.blue
+   case 3 => Color.green
+   case 4 => Color.yellow
+   case 5 => Color.cyan
+   case 6 => Color.orange
+   case 7 => Color.magenta
+ }
+
+ def RunningGame(): Unit = {
+   if (grid.canGoDown(p))
+     grid.down(p)
+   else {
+     grid.clean
+     p = grid.invoke
+   }
+
+ }
 
 }
