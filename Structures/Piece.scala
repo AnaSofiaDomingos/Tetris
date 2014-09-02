@@ -3,7 +3,7 @@ import Array._
 
 class Piece {
 
-	private var mat  = Array[Array[Boolean]]()
+	private var mat  = Array[Array[Int]]()
 	private val max  = 7
 	private var posx = 0
 	private var posy = 4
@@ -11,19 +11,25 @@ class Piece {
 	// 90° clockwise
 	def rotate: Unit = {
 
-		var newarr = Array[Array[Boolean]]()
+		var newarr = Array[Array[Int]]()
 
 		for (j <- 0 until mat(0).size) {
 
-			var sub = Array[Boolean]()
+			var sub = Array[Int]()
 
-			for (i <- (mat.size-1) to 0 by -1) {	sub = sub ++ Array(mat(i)(j))}
+			for (i <- (mat.size-1) to 0 by -1) sub = sub ++ Array(mat(i)(j))
 
 			newarr = newarr ++ Array(sub)
 
 		}
 
-		mat = newarr
+		var diff = 0
+		if (mat.size > mat(0).size)
+			diff = -1
+		if (mat.size < mat(0).size)
+			diff = 1
+		posx     = posx + diff
+		mat      = newarr
 				
 	}
 
@@ -33,7 +39,7 @@ class Piece {
 		for (i <- 0 until mat.size) {
 			for (j <- 0 until mat(i).size) {
 
-				val x = if (mat(i)(j)) 1 else 0
+				val x = mat(i)(j)
 				print(" " + x)
 
 			}
@@ -45,9 +51,9 @@ class Piece {
 
 	// Getters 
 
-	def matrix:    Array[Array[Boolean]] = mat
-	def position:  Array[Int]	     = Array(posx, posy)
-	def dimension: Array[Int]            = Array(mat.size, mat(0).size)
+	def matrix:    Array[Array[Int]] = mat
+	def position:  Array[Int]	 = Array(posx, posy)
+	def dimension: Array[Int]        = Array(mat.size, mat(0).size)
 
 	// Setters
 
@@ -62,35 +68,35 @@ class Piece {
 
 	rnd match {
 
-		case 0 => { mat = Array( Array(true), Array(true), Array(true), Array(true)) }
+		case 0 => { mat = Array( Array(1), Array(1), Array(1), Array(1) ) }
 
-		case 1 => { mat = Array( Array(true,  true),
-					 Array(true,  true) )
+		case 1 => { mat = Array( Array(2, 2),
+					 Array(2, 2) )
 			  }
 
-		case 2 => { mat = Array( Array(false, true),
-					 Array(false, true),
-					 Array(true,  true) )
+		case 2 => { mat = Array( Array(0, 3),
+					 Array(0, 3),
+					 Array(3, 3) )
 			  }
 
-		case 3 => { mat = Array( Array(true, false),
-				 	 Array(true, false),
-				 	 Array(true,  true) )
+		case 3 => { mat = Array( Array(4, 0),
+				 	 Array(4, 0),
+				 	 Array(4, 4) )
 			  }
 
-		case 4 => { mat = Array( Array(false, true),
-				         Array(true,  true),
-				         Array(false, true) )
+		case 4 => { mat = Array( Array(0, 5),
+				         Array(5, 5),
+				         Array(0, 5) )
 			  }
 
-		case 5 => { mat = Array( Array(false, true),
-					 Array(true,  true),
-					 Array(true, false) )
+		case 5 => { mat = Array( Array(0, 6),
+					 Array(6, 6),
+					 Array(6, 0) )
 			  }
 
-		case 6 => { mat = Array( Array(true,  false),
-					 Array(true,  true),
-					 Array(false, true) )
+		case 6 => { mat = Array( Array(7, 0),
+					 Array(7, 7),
+					 Array(0, 7) )
 			  }
 
 	}
