@@ -15,10 +15,9 @@ class Map {
 		var ret = true
 
 		for (i <- 0 until f.dimension(0)) 
-			for (j <- 0 until f.dimension(1)) 
+			for (j <- 0 until f.dimension(1))
 				if ((f.matrix(i)(j) != 0) && (grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1)) != 0))
-					ret = false
-
+						ret = false
 		ret
 
 	}
@@ -50,6 +49,19 @@ class Map {
 			fi = fi + 1
 
 		}
+	}
+
+	// Copies the grid into another reference
+	def copy(a: Array[Array[Int]]): Array[Array[Int]] = {
+
+		var ret = Array[Array[Int]]()
+
+		for (i <- 0 until height)
+			for (j <- 0 until width)
+				ret(i)(j) = a(i)(j)
+
+		ret
+
 	}
 
 	// Binary display
@@ -97,7 +109,6 @@ class Map {
 		clear(f)
 		f.rotate
 		draw(f)
-		
 	}
 
 	// Checks if the piece can move downwards
@@ -186,10 +197,13 @@ class Map {
 
 		var ret = true
 
-		for (i <- 0 until f.dimension(0)) 
-			for (j <- 0 until f.dimension(1)) 
-				if ((f.matrix(i)(j) != 0) && (grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1)) != 0))
-					ret = false
+		if ((f.position(1)+f.dimension(1) > this.width) || (f.position(0)+f.dimension(0) > this.height)) ret = false
+
+		else
+			for (i <- 0 until f.dimension(0)) 
+				for (j <- 0 until f.dimension(1)) 
+					if ((f.matrix(i)(j) != 0) && (grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1)) != 0))
+						ret = false
 
 		for (k <- 0 until 3) f.rotate
 		
@@ -214,7 +228,16 @@ class Map {
 	}
 
 	// Checks the grid and suppresses full rows
-	def clean: Unit = for (i <- 0 until this.height) if (isFull(i)) removeRow(i)
+	def clean: Int = {
+
+		var rows = 0
+		for (i <- 0 until this.height) if (isFull(i)) {
+			removeRow(i)
+			rows = rows + 1
+		}
+		rows
+
+	}
 
 	// Getters
 	def get(x: Int, y: Int): Int = this.grid(x)(y)
