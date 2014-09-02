@@ -29,14 +29,14 @@ object LaunchClient extends App{
 	}
 	
 	def RecupIP() = "129.194.184.109"
-	def RecupPort() = "2014"
+	def RecupPort() = 2014
 }
 
 class PlayingGame(s : Socket) extends Runnable{
 	def run(){
 		println("Clients are playing")
 		val args  = Array("1", "2")
-		Grid.startup(args)
+		Tetris.startup(args)
 	
 	}
 }

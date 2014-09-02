@@ -3,7 +3,6 @@ import java.net.ServerSocket
 import java.net.Socket
 import Runnable._
 import Thread._
-import swing._
 
 
 object LaunchServer extends App {
@@ -23,7 +22,7 @@ class Server(port:Int) extends Thread {
 	override def run(){
 		try {
 			while (true)
-				//if (NbClientConnect < 3){
+				if (NbClientConnect < 3){
 			
 				// Server waiting for a connection
 				val SocketS = new ServerSocket(port)
@@ -52,7 +51,7 @@ class Server(port:Int) extends Thread {
 				NbClientConnect += 1
 
 				
-			//	}
+				}
 		}catch {
 			case e: Exception => println("Exception caught: " + e)
 		}	
