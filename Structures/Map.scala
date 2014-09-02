@@ -217,6 +217,7 @@ class Map {
 	def clean: Unit = for (i <- 0 until this.height) if (isFull(i)) removeRow(i)
 
 	// Getters
+	def get(x: Int, y: Int): Int = this.grid(x)(y)
 	def getGrid: Array[Array[Int]] = this.grid
 	def dimension: Array[Int] = Array(height, width)
 
