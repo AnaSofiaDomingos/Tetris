@@ -16,7 +16,7 @@ class Map {
 
 		for (i <- 0 until f.dimension(0)) 
 			for (j <- 0 until f.dimension(1)) 
-				if ((f.matrix(i)(j) != 0) && (grid(i+f.position(0)-1)(j+f.position(1)) != 0))
+				if ((f.matrix(i)(j) != 0) && (grid(i+f.position(0)-f.dimension(0)+1)(j+f.position(1)) != 0))
 					ret = false
 
 		ret
