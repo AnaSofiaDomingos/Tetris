@@ -220,6 +220,10 @@ class Map {
 	// Checks the grid and suppresses full rows
 	def clean: Unit = for (i <- 0 until this.height) if (isFull(i)) removeRow(i)
 
+	// Getters
+	def getGrid: Array[Array[Boolean]] = this.grid
+	def dimension: Array[Int] = Array(height, width)
+
 	// Constructor
 	for (k <- 0 until height) { grid = grid ++ Array(Array.fill(width){false}) }
 
