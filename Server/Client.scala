@@ -2,10 +2,27 @@ import java.io.IOException;
 import java.net.{InetAddress, Socket}
 
 object Client extends App{
-	val ip = RecupIP
-	val port = RecupPort
+	
+	// giving the grid
+	println("Clients are playing")
+	val args1  = Array("1", "2")
+	Grid.startup(args1)
+	
+	// connecting to the server
+	var ip = Grid.getIP
+	var port = (Grid.getPort).toInt
+	var connected = isConnected
+	println(connected)
+
+	while (!connected){
+		ip = Grid.getIP
+		port = (Grid.getPort).toInt
+		connected = isConnected
+	}
+	println(connected)
 	
 	try {
+
 		// Client asking for a connection
 		println(InetAddress.getLocalHost())
 		val SocketC = new Socket(ip, port)	
@@ -14,40 +31,29 @@ object Client extends App{
 		// Client connected	
 		import java.io.{BufferedReader, InputStreamReader}
 		val in = new BufferedReader (new InputStreamReader (SocketC.getInputStream()))
-	        val NbConnectionStr : String = in.readLine()
+		val NbConnectionStr : String = in.readLine()
 	       	val NbConnection : Int = NbConnectionStr.toInt
 
 		// Client playing
 
-		(new GiveGrid(SocketC)).run
-
 		if (NbConnection == 2 ){
 			println("play")
+			
 		}else{
 			println("Wait for a second player")
 		}
-		
-	
+
+
 
 		// Client closing
-		SocketC.close();	
+		SocketC.close();
 	} catch {
 		case e: Exception => println("Exception caught: " + e)
 	}
 	
-	def RecupIP() = "129.194.184.109"
-	def RecupPort() = 2014
+	def isConnected() = { if ((ip != "aaa.bbb.ccc.ddd") && (port != 0)) true else false}
 
 	
-}
-
-class GiveGrid(s : Socket) extends Runnable{
-	def run(){
-		println("Clients are playing")
-		val args  = Array("1", "2")
-		Grid.startup(args)
-	
-	}
 }
 
 
