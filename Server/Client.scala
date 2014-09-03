@@ -1,8 +1,7 @@
 import java.io.IOException;
 import java.net.{InetAddress, Socket}
 
-
-object LaunchClient extends App{
+object Client extends App{
 	val ip = RecupIP
 	val port = RecupPort
 	
@@ -15,12 +14,20 @@ object LaunchClient extends App{
 		// Client connected	
 		import java.io.{BufferedReader, InputStreamReader}
 		val in = new BufferedReader (new InputStreamReader (SocketC.getInputStream()))
-                val Connection : String = in.readLine()
-                println(Connection);
+	        val NbConnectionStr : String = in.readLine()
+	       	val NbConnection : Int = NbConnectionStr.toInt
 
 		// Client playing
-		(new PlayingGame(SocketC)).run
+
+		(new GiveGrid(SocketC)).run
+
+		if (NbConnection == 2 ){
+			println("play")
+		}else{
+			println("Wait for a second player")
+		}
 		
+	
 
 		// Client closing
 		SocketC.close();	
@@ -30,13 +37,15 @@ object LaunchClient extends App{
 	
 	def RecupIP() = "129.194.184.109"
 	def RecupPort() = 2014
+
+	
 }
 
-class PlayingGame(s : Socket) extends Runnable{
+class GiveGrid(s : Socket) extends Runnable{
 	def run(){
 		println("Clients are playing")
 		val args  = Array("1", "2")
-		Tetris.startup(args)
+		Grid.startup(args)
 	
 	}
 }
