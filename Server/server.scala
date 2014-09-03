@@ -34,15 +34,17 @@ class Server(port:Int) extends Thread {
 
 					// Server giving answer to client
 					import java.io.PrintWriter
-					val out = new PrintWriter(SocketConnect.getOutputStream())
-					//out.println("You are connected to the Server")
-					//out.flush()		
+					val out = new PrintWriter(SocketConnect.getOutputStream())	
 					out.println(NbClientConnect)
 					out.flush()			
 					println("Client " + NbClientConnect + " connected!")
 
+
 					// Server doing something
-					//(new PlayingGame(SocketConnect)).run
+					import java.io.{BufferedReader, InputStreamReader}
+					val in = new BufferedReader (new InputStreamReader (SocketConnect.getInputStream()))
+					val test : String = in.readLine()
+					println(test)
 
 					// Server closing
 					out.close()
@@ -58,6 +60,8 @@ class Server(port:Int) extends Thread {
 	}
 
 	def ### = println("##################################################\n")
+
+	
 }
 
 

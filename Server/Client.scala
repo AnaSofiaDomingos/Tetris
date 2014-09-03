@@ -6,52 +6,55 @@ object Client extends App{
 	// giving the grid
 	println("Clients are playing")
 	val args1  = Array("1", "2")
-	Grid.startup(args1)
+	Tetris.startup(args1)
 	
 	// connecting to the server
-	var ip = Grid.getIP
-	var port = (Grid.getPort).toInt
+	var ip = Tetris.Interface.ip
+	var port = (Tetris.Interface.port).toInt
 	var connected = isConnected
-	println(connected)
 
 	while (!connected){
-		ip = Grid.getIP
-		port = (Grid.getPort).toInt
+		ip = Tetris.Interface.ip
+		port = (Tetris.Interface.port).toInt
 		connected = isConnected
 	}
-	println(connected)
-	
+	var SocketC = new Socket()
+	var NbConnection = 0
+
 	try {
 
 		// Client asking for a connection
 		println(InetAddress.getLocalHost())
-		val SocketC = new Socket(ip, port)	
+		SocketC = new Socket(ip, port)	
 		println("Asking for connection")
 
 		// Client connected	
 		import java.io.{BufferedReader, InputStreamReader}
 		val in = new BufferedReader (new InputStreamReader (SocketC.getInputStream()))
 		val NbConnectionStr : String = in.readLine()
-	       	val NbConnection : Int = NbConnectionStr.toInt
+	       	NbConnection = NbConnectionStr.toInt
 
 		// Client playing
-
-		if (NbConnection == 2 ){
-			println("play")
-			
-		}else{
-			println("Wait for a second player")
-		}
-
-
 
 		// Client closing
 		SocketC.close();
 	} catch {
 		case e: Exception => println("Exception caught: " + e)
 	}
+
+	if (NbConnection == 2 ){
+		println("play")
+		//Tetris.Actions()
+		
+	}else{
+		println("Wait for a second player")
+	}
+
 	
 	def isConnected() = { if ((ip != "aaa.bbb.ccc.ddd") && (port != 0)) true else false}
+
+	def getSocket() = {println("geting socket") 
+				SocketC}
 
 	
 }
