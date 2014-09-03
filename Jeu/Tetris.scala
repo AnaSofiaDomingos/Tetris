@@ -56,8 +56,12 @@ object Tetris extends SimpleSwingApplication{
         case KeyPressed(_, Key.Up, _, _) => {
           if (grid.canRotate(p)) grid.rotate(p)
           TimerFunction
-
         }
+
+	      case KeyPressed(_, Key.Space, _, _) => {
+	        while (grid.canGoDown(p)) grid.down(p)
+	        TimerFunction
+	      }
       }
 
       focusable = true
