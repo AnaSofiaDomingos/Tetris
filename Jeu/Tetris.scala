@@ -12,17 +12,22 @@ import javax.swing.BorderFactory
 object  Tetris extends SimpleSwingApplication{
   private var grid = new Map
   private var p = grid.invoke
+  grid.draw(p)
+  private var p2 = grid.invoke
   private var nbLine        = 0
   private var currentScore  = 0
   private var mainScoreLine = 0
   private var mainScore     = 0
-  private var stateGame: Int = 0// 0 : en cours 1 : perdu 2 : Gagné
+  private var stateGame:Int = 0 // 0 = en cours ; 1 = perdu ; 2 = Gagné
   val x:Int = 22
   var y:Int = 10
+  var a:Int = 4
+  var b:Int = 2
   var tabButtons = Array.ofDim[Button](x,y)
+  var tabNext = Array.ofDim[Button](a,b)
 
   val top = Interface
-  //println("Test2")
+
   object Interface extends MainFrame{
 
     title = "Tetris"
@@ -47,7 +52,6 @@ object  Tetris extends SimpleSwingApplication{
 
       reactions += {
         case KeyPressed(_, Key.Right, _, _) => {
-          println("right")
           if ((stateGame == 0) && (grid.canGoRight(p))) grid.right(p)
           TimerFunction
         }
@@ -67,7 +71,6 @@ object  Tetris extends SimpleSwingApplication{
         }
 
         case KeyPressed(_, Key.Up, _, _) => {
-          println("up")
          // if (stateGame==3) stateGame = 0
           if ((stateGame == 0) && (grid.canRotate(p))) grid.rotate(p)
           TimerFunction
@@ -90,29 +93,38 @@ object  Tetris extends SimpleSwingApplication{
 
     val labelGAMEOVER = new Label{
       text = "LOOSER"
-      font = new Font("Ariel", java.awt.Font.BOLD, 50)
+      font = new Font("Ariel", java.awt.Font.BOLD, 30)
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
       foreground = Color.red
+      background = new Color(0,0,0,0)
+      opaque_=(false)
     }
 
-    val labelGAMEWIN = new Label{
-      text = "WINNER"
-      font = new Font("Ariel", java.awt.Font.BOLD, 50)
-      foreground = Color.red
+
+    val panGRID = new BoxPanel(Orientation.Horizontal){   		
+	contents += new BorderPanel{
+		add(gridPanel, BorderPanel.Position.Center)
+		add(labelGAMEOVER, BorderPanel.Position.South)
+		labelGAMEOVER.opaque_=(false)
+		labelGAMEOVER.visible_=(false)
+	}
+	
     }
 
-    val panGRID = new BorderPanel{
-      if(stateGame == 0){
-        layout(gridPanel) = Center
-      }else if(stateGame == 1){
-        layout(labelGAMEOVER) = Center
-      }else if(stateGame == 2){
-        layout(labelGAMEWIN) = Center
+    val imageNEXT = new GridPanel(a,b){
+       this.preferredSize = new Dimension(a*40, b*40)
+       background =(new Color(100, 100, 100))
+       for( i <- 0 until a){
+        for( j <- 0 until b) {
+          tabNext(i)(j) = new Button()
+	  tabNext(i)(j).borderPainted = false
+	  tabNext(i)(j).enabled = false
+	  tabNext(i)(j).background =(new Color(100, 100, 100))
+          contents += tabNext(i)(j)
+        }
       }
     }
 
-    val imageNEXT = new Label{
-      icon = new ImageIcon("O.png")
-    }
     val labelNEXT = new Label{
       text = "NEXT PIECE"
       font = new Font("Ariel", java.awt.Font.ITALIC, 24)
@@ -247,6 +259,19 @@ object  Tetris extends SimpleSwingApplication{
     }
   }
 
+  def DisplayNext: Unit = {
+    for( i <- 0 until a)
+      for( j <- 0 until b) {
+	  if ((i < p2.dimension(0)) && (j < p2.dimension(1)))
+  	    tabNext(i)(j).background = colorGen(p2.matrix(i)(j))
+          else 
+            tabNext(i)(j).background = null
+
+	  tabNext(i)(j).borderPainted = tabNext(i)(j).background match { case null => false
+          case _ => true }
+	}
+  }
+
   def RunningGame(): Unit = {
     if (grid.canGoDown(p))
       grid.down(p)
@@ -264,20 +289,25 @@ object  Tetris extends SimpleSwingApplication{
       mainScore   += currentScore
       Interface.txtSCORE.text = mainScore.toString
 
-      p = grid.invoke
+      p = p2
+      p2 = grid.invoke
       if (!grid.isValid(p)) {
         //GAMEOVER
-        println("!! Game Over !!")
         stateGame = 1
+	top.labelGAMEOVER.opaque_=(true)
+	top.labelGAMEOVER.visible_=(true)
+	top.gridPanel.opaque_=(true)
         timer.stop
+      }
+      else {
+        grid.draw(p)
+	DisplayNext
       }
     }
 
   }
 
-  val timer=new javax.swing.Timer(500, Swing.ActionListener(e =>
-  {
-    println(stateGame.toString)
+  val timer=new javax.swing.Timer(500, Swing.ActionListener(e => {
     if(stateGame == 0) {
       RunningGame
       TimerFunction
@@ -296,7 +326,17 @@ object  Tetris extends SimpleSwingApplication{
   }
 
   def RefreshColors(i: Int, j: Int): Color = grid.get(i,j) match {
-    //lastGrid = grid.getGrid
+    case 0 => null
+    case 1 => Color.red
+    case 2 => Color.blue
+    case 3 => Color.green
+    case 4 => Color.pink
+    case 5 => Color.cyan
+    case 6 => Color.orange
+    case 7 => Color.magenta
+  }
+
+  def colorGen(x: Int): Color = x match {
     case 0 => null
     case 1 => Color.red
     case 2 => Color.blue
