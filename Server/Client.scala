@@ -1,10 +1,10 @@
 import java.io.IOException;
 import java.net.{InetAddress, Socket}
+import java.io.{BufferedReader, InputStreamReader, PrintWriter}
 
 object Client extends App{
 	
 	// giving the grid
-	println("Clients are playing")
 	val args1  = Array("1", "2")
 	Tetris.startup(args1)
 	
@@ -19,39 +19,33 @@ object Client extends App{
 		connected = isConnected
 	}
 	var SocketC = new Socket()
-	var NbConnection = 0
+	var out : PrintWriter = null
 
 	try {
 
 		// Client asking for a connection
 		println(InetAddress.getLocalHost())
 		SocketC = new Socket(ip, 2014)	
-		println("Asking for connection")
 
 		// Client connected	
-		import java.io.{BufferedReader, InputStreamReader}
 		val in = new BufferedReader (new InputStreamReader (SocketC.getInputStream()))
+		val o = new PrintWriter(SocketC.getOutputStream(),true)
+		out = o
 		val s : String = in.readLine()
 		if (s.startsWith("startGame"))
 			Tetris.startGame
 
+		
+
 		// Client playing
 
 		// Client closing
-		SocketC.close();
+		//SocketC.close()
 	} catch {
 		case e: Exception => println("Exception caught: " + e)
 	}
 
-	if (NbConnection == 2 ){
-		println("play")
-		//Tetris.Actions()
 		
-	}else{
-		println("Wait for a second player")
-	}
-
-	
 	def isConnected() = { if ((ip != "aaa.bbb.ccc.ddd") && (port != 0)) true else false}
 
 	def getSocket() = {println("geting socket") 
