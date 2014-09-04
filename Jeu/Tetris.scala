@@ -101,37 +101,33 @@ object  Tetris extends SimpleSwingApplication{
       opaque_=(false)
     }
 
-    val labelGAMEWIN = new Label{
-      text = "WINNER"
-      font = new Font("Ariel", java.awt.Font.BOLD, 50)
-      foreground = Color.red
-    }
-
-   // layout(labelGAMEWIN) = Center
-
     val panGRID = new BoxPanel(Orientation.Horizontal){
       contents += new BorderPanel{
         add(gridPanel, BorderPanel.Position.Center)
-        add(labelGAMEOVER, BorderPanel.Position.South)
+        add(labelGAMEOVER, BorderPanel.Position.North)
         labelGAMEOVER.opaque_=(false)
         labelGAMEOVER.visible_=(false)
       }
     }
 
     val imageNEXT = new GridPanel(a,b){
-      this.preferredSize = new Dimension(a*40, b*40)
+     preferredSize = new Dimension(75,100)
       background =(new Color(100, 100, 100))
       for( i <- 0 until a){
         for( j <- 0 until b) {
           tabNext(i)(j) = new Button()
           tabNext(i)(j).borderPainted = false
           tabNext(i)(j).enabled = false
-         // tabNext(i)(j).background =(new Color(100, 100, 100))
-         // tabNext(i)(j).preferredSize = new Dimension(40, 40)
           contents += tabNext(i)(j)
         }
       }
     }
+
+    val Pan2Next = new Panel(){
+	 preferredSize = new Dimension(100,100)
+         background =(new Color(100, 100, 100))
+	_contents += imageNEXT
+   }
 
     val labelNEXT = new Label{
       text = "NEXT PIECE"
@@ -156,11 +152,11 @@ object  Tetris extends SimpleSwingApplication{
       foreground = Color.white
     }
     val panNEXT = new BorderPanel {
-      preferredSize = new Dimension(200, 200)
+      preferredSize = new Dimension(200, 150)
       background = (new Color(100, 100, 100))
       border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
       layout(labelNEXT) = North
-      layout(imageNEXT) = Center
+      layout(Pan2Next) = Center
     }
     val panSCORE = new BorderPanel {
       preferredSize = new Dimension(200, 100)
@@ -254,11 +250,6 @@ object  Tetris extends SimpleSwingApplication{
       layout(panGRID)= Center
       layout(panel)= East
     }
-
-/*
-    def win:Unit = {
-      panGRID.layout(labelGAMEWIN) = Center
-    }*/
   }
 
   def TimerFunction: Unit = {
@@ -271,18 +262,6 @@ object  Tetris extends SimpleSwingApplication{
       }
     }
   }
-/*
-  def DisplayNext: Unit = {
-    for( i <- 0 until a)
-      for( j <- 0 until b) {
-        if ((i < p2.dimension(0)) && (j < p2.dimension(1)))
-          tabNext(i)(j).background = colorGen(p2.matrix(i)(j))
-        else
-          tabNext(i)(j).background = null
-        tabNext(i)(j).borderPainted = tabNext(i)(j).background match { case null => false
-        case _ => true }
-      }
-  }*/
 
   def DisplayNext: Unit = {
     for( i <- 0 until a){
@@ -363,18 +342,6 @@ object  Tetris extends SimpleSwingApplication{
     if (t.size == new Dimension(0,0)) t.pack()
     t.visible = true
   }
-
-  /*def RefreshColors(i: Int, j: Int): Color = grid.get(i,j) match {
-    //lastGrid = grid.getGrid
-    case 0 => null
-    case 1 => Color.red
-    case 2 => Color.blue
-    case 3 => Color.green
-    case 4 => Color.pink
-    case 5 => Color.cyan
-    case 6 => Color.orange
-    case 7 => Color.magenta
-  }*/
 
 
   def colorGen(x: Int): Color = x match {
