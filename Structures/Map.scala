@@ -1,3 +1,4 @@
+import java.util.Random
 import Array._
 
 class Map {
