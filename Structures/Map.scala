@@ -227,6 +227,19 @@ class Map {
 
 	}
 
+	// Adds rows at the bottom and moves upwards the map
+	def addRow(r: Int): Unit = {
+
+		for (i <- 0 until (height-r))
+			grid(i) = grid(i+r)
+		for (i <- 0 until r) {
+			grid(height-(i+1)) = Array.fill(width){9}
+			var rnd = Math.round(new Random().nextDouble * (width-1)).toInt
+			grid(height-(i+1))(rnd) = 0
+		}
+
+	}
+
 	// Checks the grid and suppresses full rows
 	def clean: Int = {
 
