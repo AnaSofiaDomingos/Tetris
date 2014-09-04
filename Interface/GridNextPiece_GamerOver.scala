@@ -12,6 +12,8 @@ import javax.swing.BorderFactory
 object  Tetris extends SimpleSwingApplication{
   private var grid = new Map
   private var p = grid.invoke
+  grid.draw(p)
+  private var p2 = grid.invoke
   private var nbLine        = 0
   private var currentScore  = 0
   private var mainScoreLine = 0
@@ -275,7 +277,8 @@ object  Tetris extends SimpleSwingApplication{
       mainScore   += currentScore
       Interface.txtSCORE.text = mainScore.toString
 
-      p = grid.invoke
+      p = p2
+      p2 = grid.invoke
       if (!grid.isValid(p)) {
         //GAMEOVER
         println("!! Game Over !!")
@@ -285,6 +288,7 @@ object  Tetris extends SimpleSwingApplication{
 	top.gridPanel.opaque_=(true)
         timer.stop
       }
+      else grid.draw(p)
     }
 
   }
