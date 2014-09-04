@@ -25,14 +25,15 @@ object Client extends App{
 
 		// Client asking for a connection
 		println(InetAddress.getLocalHost())
-		SocketC = new Socket(ip, port)	
+		SocketC = new Socket(ip, 2014)	
 		println("Asking for connection")
 
 		// Client connected	
 		import java.io.{BufferedReader, InputStreamReader}
 		val in = new BufferedReader (new InputStreamReader (SocketC.getInputStream()))
-		val NbConnectionStr : String = in.readLine()
-	       	NbConnection = NbConnectionStr.toInt
+		val s : String = in.readLine()
+		if (s.startsWith("startGame"))
+			Tetris.startGame
 
 		// Client playing
 
