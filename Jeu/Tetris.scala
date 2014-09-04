@@ -273,6 +273,8 @@ object Tetris extends SimpleSwingApplication{
         top.labelGAMEOVER.visible_=(true)
         top.gridPanel.opaque_=(true)
         timer.stop
+        ClientFinal.out.println("GAME OVER")
+        ClientFinal.SocketC.close
         //Interface.txtLINE.text = "GAME OVER"
       }
       else {
@@ -316,5 +318,3 @@ object Tetris extends SimpleSwingApplication{
   }
 
  }
-
-
