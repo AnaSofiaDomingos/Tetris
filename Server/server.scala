@@ -17,14 +17,16 @@ class Server(port:Int) extends Thread {
 
         ###
 	var NbClientConnect : Int = 1
+
+	
+	// Server waiting for a connection
+	val SocketS = new ServerSocket(port)
+	println("Server listening on "+ SocketS.getLocalPort())
 	override def run() = {
 
 		try {
 			while (true){
 				val game = new Game
-				// Server waiting for a connection
-				val SocketS = new ServerSocket(port)
-				println("Server listening on "+ SocketS.getLocalPort())
 		      		
 				// Server accepting the client	
 				val Player1 = new game.Player(SocketS.accept(), "1")
@@ -57,7 +59,6 @@ class Game {
 				val input = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 				val output = new PrintWriter(socket.getOutputStream(), true)
 				output.println("startGame")
-				//output.println("MESSAGE Waiting for opponent to connect")
 			}catch {
 				case e: Exception => println("Exception caught: " + e)
 			}
