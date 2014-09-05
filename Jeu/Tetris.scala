@@ -9,7 +9,7 @@ import javax.swing.BorderFactory
 // http://docs.oracle.com/javase/tutorial/uiswing/components/border.html
 
 
-object  Tetris2 extends SimpleSwingApplication{
+object  Tetris extends SimpleSwingApplication{
   private var grid = new Map
   private var p = grid.invoke
   private var p2 = grid.invoke
