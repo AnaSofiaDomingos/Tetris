@@ -1,0 +1,450 @@
+
+import scala.swing._
+import scala.swing.BorderPanel.Position._
+import event._
+import java.awt.{ Color, Graphics2D }
+import scala.util.Random
+import javax.swing.{Icon, ImageIcon}
+import javax.swing.BorderFactory
+
+object  Tetris extends SimpleSwingApplication{
+  private var grid = new Map
+  private var p = grid.invoke
+  private var p2 = grid.invoke
+  private var nbLine        = 0
+  private var currentScore  = 0
+  private var mainScoreLine = 0
+  private var mainScore     = 0
+  private var stateGame:Int = -1 // -1 = before the game,  0 = in progress, 1 = lost,  2 = win
+  var x:Int = 22
+  var y:Int = 10
+  var tabButtons = Array.ofDim[Button](x,y)
+  var a:Int = 4
+  var b:Int = 2
+  var tabNext = Array.ofDim[Button](a,b)
+
+  val top = Interface
+  object Interface extends MainFrame{
+
+    title = "Tetris"
+    preferredSize = new Dimension(700, 800)
+
+   /*--------------------------------------------------
+    --------------------- GAME PANEL ------------------
+    ---------------------------------------------------- */
+
+// grid of the game
+    val gridPanel = new GridPanel(x,y){
+      this.preferredSize = new Dimension(y*40, x*40)
+      for( i <- 0 until x){
+        for( j <- 0 until y) {
+          tabButtons(i)(j) = new Button()
+          tabButtons(i)(j).borderPainted = false
+          tabButtons(i)(j).enabled = false
+          contents += tabButtons(i)(j)
+        }
+      }
+
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
+
+
+
+//  movments buttons (LEFT, RIGHT, DOWN, UP)
+      listenTo(keys)
+
+      reactions += {
+        case KeyPressed(_, Key.Right, _, _) => {
+          if ((stateGame == 0) && (grid.canGoRight(p))) grid.right(p)
+          TimerFunction
+        }
+
+        case KeyPressed(_, Key.Left, _, _) => {
+          if ((stateGame == 0) && (grid.canGoLeft(p))) grid.left(p)
+          TimerFunction
+        }
+
+        case KeyPressed(_, Key.Down, _, _) => {
+          if ((stateGame == 0) && (grid.canGoDown(p))) {
+            grid.down(p)
+            RunningGame
+            TimerFunction
+            timer.restart()
+          }
+	  if (stateGame == -1) startGame
+        }
+
+        case KeyPressed(_, Key.Up, _, _) => {
+          if ((stateGame == 0) && (grid.canRotate(p))) grid.rotate(p)
+          TimerFunction
+
+        }
+
+        case KeyPressed(_, Key.Space, _, _) => {
+          while (grid.canGoDown(p)) grid.down(p)
+          TimerFunction
+        }
+      }
+
+      focusable = true
+      requestFocus
+    } 
+
+
+// label to display the game over
+    val labelGAMEOVER = new Label{
+      text = "LOOSER"
+      font = new Font("Ariel", java.awt.Font.BOLD, 30)
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
+      foreground = Color.red
+      background = new Color(0,0,0,0)
+      opaque_=(false)
+    }
+
+
+// big Panel for the left part of the Frame
+    val panGRID = new BoxPanel(Orientation.Horizontal){
+      contents += new BorderPanel{
+        add(gridPanel, BorderPanel.Position.Center)
+        add(labelGAMEOVER, BorderPanel.Position.North)
+        labelGAMEOVER.opaque_=(false)
+        labelGAMEOVER.visible_=(false)
+      }
+    }
+
+   /*--------------------------------------------------
+    ---------------------- NEXT PIECE -----------------
+    ---------------------------------------------------- */
+
+// label to display the next piece
+   val labelNEXT = new Label{
+      text = "NEXT PIECE"
+      font = new Font("Ariel", java.awt.Font.ITALIC, 24)
+    }
+
+ // draw the next piece
+    val imageNEXT = new GridPanel(a,b){
+     preferredSize = new Dimension(75,100)
+      background =(new Color(100, 100, 100))
+      for( i <- 0 until a){
+        for( j <- 0 until b) {
+          tabNext(i)(j) = new Button()
+          tabNext(i)(j).borderPainted = false
+          tabNext(i)(j).enabled = false
+          tabNext(i)(j).background =(new Color(100, 100, 100))
+          contents += tabNext(i)(j)
+        }
+      }
+    }
+
+ // add gridpanel to a panel
+    val Pan2Next = new Panel(){
+	 preferredSize = new Dimension(100,100)
+         background =(new Color(100, 100, 100))
+	_contents += imageNEXT
+   }
+
+// big panel for the next piece  
+    val panNEXT = new BorderPanel {
+      preferredSize = new Dimension(200, 150)
+      background = (new Color(100, 100, 100))
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
+      layout(labelNEXT) = North
+      layout(Pan2Next) = Center
+    }
+
+   /*--------------------------------------------------
+    ------------------------ SCORE --------------------
+    ---------------------------------------------------- */
+
+// label to display the title of the scores's panel 
+    val labelSCORE = new Label{
+      text = "SCORE"
+      font = new Font("Ariel", java.awt.Font.ITALIC, 24)
+    }
+
+// label to display the score
+    val txtSCORE = new Label{
+      text = "0"
+      font = new Font("Ariel", java.awt.Font.BOLD, 35)
+      foreground = Color.white
+    }
+   
+// big panel for the personal score
+    val panSCORE = new BorderPanel {
+      preferredSize = new Dimension(200, 100)
+      background = (new Color(100, 100, 100))
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
+      layout(labelSCORE) = North
+      layout(txtSCORE) = South
+    }
+
+    /*--------------------------------------------------
+    ------------------------- LINE ---------------------
+    ---------------------------------------------------- */
+
+// label to display the title of the lines's panel 
+    val labelLINE = new Label{
+      text = "LINES"
+      font = new Font("Ariel", java.awt.Font.ITALIC, 24)
+    }
+
+// label to display the lines
+    val txtLINE = new Label{
+      text = "0"
+      font = new Font("Ariel", java.awt.Font.BOLD, 35)
+      foreground = Color.white
+    }
+
+// big panel for the number of lines
+    val panLINE = new BorderPanel {
+      preferredSize = new Dimension(200, 100)
+      background = (new Color(100, 100, 100))
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
+      layout(labelLINE) = North
+      layout(txtLINE) = South
+    }
+
+    /*--------------------------------------------------
+    --------------------- CONNEXION --------------------
+    ---------------------------------------------------- */
+    
+    var port = "2014"
+    var ip = "129.194.184.xxx"
+    var pseudo = "pseudonyme"
+ 
+// label to display the title of the connexion's panel
+    val labelConnexion = new Label{
+      text = "CONNEXION"
+      font = new Font("Ariel", java.awt.Font.ITALIC, 24)
+    }
+
+// label to get the port
+    val txtPort = new TextField{
+      preferredSize = new Dimension(120, 50)
+      background = (new Color(50, 50, 50))
+      foreground = Color.white
+      text = port
+    }
+
+// label to get the IP
+    val txtIP = new TextField{
+      preferredSize = new Dimension(120, 50)
+      background = (new Color(50, 50, 50))
+      foreground = Color.white
+      text = ip
+    }
+  
+// label to get the pseudo
+   val txtPseudo = new TextField{
+      preferredSize = new Dimension(120, 50)
+      background = (new Color(50, 50, 50))
+      foreground = Color.white
+      text = pseudo
+    }
+
+// button for connect to the server
+    val button = new Button {
+      text = "VALIDATE"
+    }
+
+// big panel for the connexion's panel
+    val panCONNEXION = new Panel {
+      preferredSize = new Dimension(200, 280)
+      background = (new Color(100, 100, 100))
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
+      _contents += labelConnexion
+      _contents += txtIP
+      _contents += txtPort
+      _contents += txtPseudo
+      _contents += button
+    }
+    /*--------------------------------------------------
+    -------------- IS CONNECTED/SCORE DISPLAY ----------
+    ---------------------------------------------------- */
+    
+// label to display the title of the isconnected's panel
+    val labelWelcome = new Label{
+      text = "WELCOME"
+      font = new Font("Ariel", java.awt.Font.ITALIC, 24)
+    }
+
+// display the data
+    val labelPort= new Label{ text = port }
+    val labelIP = new Label{ text = ip }
+    val labelPseudo = new Label{ text = pseudo }
+
+
+// big panel for the isconnected's panel
+    val panCONNECTED = new Panel {
+      preferredSize = new Dimension(200, 280)
+      background = (new Color(100, 100, 100))
+      border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
+      _contents += labelWelcome
+      _contents += labelIP
+      _contents += labelPort
+      _contents += labelPseudo
+    }
+
+
+// big Panel for the right part of the Frame
+    val panel = new Panel {
+      preferredSize = new Dimension(250, 800)
+      background = (new Color(155, 150, 200))
+      border = BorderFactory.createMatteBorder(5,1,5,5,Color.black)
+      _contents += panNEXT
+      _contents += panSCORE
+      _contents += panLINE
+      _contents += panCONNEXION
+
+     // button for connect on the server
+      listenTo(button)
+      reactions += {
+        case ButtonClicked(b) => 
+          port = txtPort.text
+          ip = txtIP.text
+          pseudo = txtPseudo.text
+
+          labelIP.text = ip
+          labelPseudo.text = pseudo
+          labelPort.text = port
+         
+          println("\n Pseudo : "+port+"\n AdresseIP : "+ip+"\n Pseudo : "+pseudo)
+          panCONNEXION.visible_=(false)
+          _contents += panCONNECTED
+      }
+    }
+
+// add the right panel and the left panel on the frame
+    contents = new BorderPanel{
+      layout(panGRID)= Center
+      layout(panel)= East
+    }
+  }
+
+
+   /*--------------------------------------------------
+    ----------------- TimerFunction -------------------
+    ---------------------------------------------------- */
+
+  def TimerFunction: Unit = {
+    for( i <- 0 until x){
+      for( j <- 0 until y) {
+        tabButtons(i)(j).background = colorGen(grid.get(i,j))
+        tabButtons(i)(j).borderPainted = grid.get(i,j) match { case 0 => false
+        case _ => true }
+      }
+    }
+  }
+
+
+   /*--------------------------------------------------
+    ------------- Display the next piece ---------------
+    ---------------------------------------------------- */
+
+  def DisplayNext: Unit = {
+    for( i <- 0 until a){
+      for( j <- 0 until b) {
+        if ((i < p2.dimension(0)) && (j < p2.dimension(1))) {
+          tabNext(i)(j).background = colorGen(p2.matrix(i)(j))
+          tabNext(i)(j).borderPainted = p2.matrix(i)(j) match {
+            case 0 => false
+            case _ => true
+          }
+        } else {
+          tabNext(i)(j).borderPainted = false
+          tabNext(i)(j).background    = null
+        }
+      }
+    }
+  }
+
+   /*--------------------------------------------------
+    ---------------- Motors of the game ---------------
+    ---------------------------------------------------- */
+
+  def RunningGame(): Unit = {
+    if (grid.canGoDown(p))
+      grid.down(p)
+    else {
+      nbLine = grid.clean
+      mainScoreLine += nbLine
+      Interface.txtLINE.text = mainScoreLine.toString
+      currentScore = nbLine match {
+        case 1 => 10
+        case 2 => 30
+        case 3 => 60
+        case 4 => 100
+        case _ => 0
+      }
+      mainScore   += currentScore
+      Interface.txtSCORE.text = mainScore.toString
+
+      p = p2
+      p2 = grid.invoke
+      if (!grid.isValid(p)) {
+        //GAMEOVER
+        println("!! Game Over !!")
+        stateGame = 1
+        top.labelGAMEOVER.opaque_=(true)
+        top.labelGAMEOVER.visible_=(true)
+        top.gridPanel.opaque_=(true)
+        timer.stop
+      }
+      grid.draw(p)
+      DisplayNext
+    }
+
+  }
+
+
+   /*--------------------------------------------------
+    -------------------- Game speed -------------------
+    ---------------------------------------------------- */
+  
+ val timer=new javax.swing.Timer(500, Swing.ActionListener(e =>{
+    if(stateGame == 0) {
+      RunningGame
+      TimerFunction
+    }
+  }))
+
+   /*----------------------------------------------------
+    -----------------  start the game -------------------
+    ---------------------------------------------------- */
+ 
+  def startGame: Unit = {
+    stateGame = 0
+    grid.draw(p)
+    DisplayNext
+    //grid.addRow(2)
+    TimerFunction
+    timer.start()
+  }
+
+   /*--------------------------------------------------
+    -------  allows to call the Interface (top) -------
+    ---------------------------------------------------- */
+
+  override def startup(args: Array[String]) = {
+    val t = top
+    if (t.size == new Dimension(0,0)) t.pack()
+    t.visible = true
+  }
+
+
+   /*--------------------------------------------------
+    --------- Change the color of the buttons----------
+    ---------------------------------------------------- */
+  def colorGen(x: Int): Color = x match {
+    case 0 => null
+    case 1 => Color.red
+    case 2 => Color.blue
+    case 3 => Color.green
+    case 4 => Color.pink
+    case 5 => Color.cyan
+    case 6 => Color.orange
+    case 7 => Color.magenta
+    case 9 => Color.gray
+  }
+
+}
