@@ -9,7 +9,7 @@ import javax.swing.BorderFactory
 // http://docs.oracle.com/javase/tutorial/uiswing/components/border.html
 
 
-object  Tetris extends SimpleSwingApplication{
+object Tetris extends SimpleSwingApplication{
   private var grid = new Map
   private var p = grid.invoke
   private var p2 = grid.invoke
@@ -90,7 +90,7 @@ object  Tetris extends SimpleSwingApplication{
 
 
     val labelGAMEOVER = new Label{
-      text = "LOOSER"
+      text = "GAME OVER"
       font = new Font("Ariel", java.awt.Font.BOLD, 30)
       border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
       foreground = Color.red
@@ -301,8 +301,9 @@ object  Tetris extends SimpleSwingApplication{
     }
   }
 
-  def RunningGame(): Unit = {
-    var paq = new StringBuilder()
+  def RunningGame(): Unit = {  
+    import java.lang.StringBuilder
+    val str = new StringBuilder()
 
     if (grid.canGoDown(p))
       grid.down(p)
@@ -320,10 +321,13 @@ object  Tetris extends SimpleSwingApplication{
       mainScore   += currentScore
       Interface.txtSCORE.text = mainScore.toString
 
-      // send info to server
-      paq.append("Score;" + Client.user + ";"+ mainScore + ";" + stateGame + "\n")
-      Client.out.println(paq) 
-      Client.out.flush()
+      /* send info to server currently with the class Paquets 
+      DOESN'T WORK
+      val paq1 = new Paquets("Score", top.pseudo, mainScore, stateGame)
+      LaunchClient.out.writeObject(paq1)
+      LaunchClient.out.flush()*/
+
+      
 
       p = p2
       p2 = grid.invoke
@@ -336,12 +340,21 @@ object  Tetris extends SimpleSwingApplication{
         top.labelGAMEOVER.visible_=(true)
         top.gridPanel.opaque_=(true)
 
-	// send info to server 
+	/* send info to server with the class Paquets 
+	DOESN'T WORK
+	val paq = new Paquets("GAME OVER", top.pseudo, mainScore, stateGame)
+	LaunchClient.out.writeObject(paq)
+        LaunchClient.out.flush() 
+        LaunchClient.out.close()*/
+
+	// send info to server
+	val str = new StringBuilder()
+	str.append("GAME OVER;" + mainScore.toString)
+	LaunchClient.out.println(str)
+        LaunchClient.out.flush()  
+        LaunchClient.out.close()
 	
-        paq.append("GAME OVER;" + Client.user + ";"+ mainScore + ";" + stateGame + "\n")
-        Client.out.println(paq) 
-	Client.out.close()
-        Client.SocketC.close
+        LaunchClient.SocketC.close
 
         timer.stop
       }

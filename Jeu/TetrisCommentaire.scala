@@ -92,7 +92,7 @@ object  Tetris extends SimpleSwingApplication{
 
 // label to display the game over
     val labelGAMEOVER = new Label{
-      text = "LOOSER"
+      text = "GAME OVER"
       font = new Font("Ariel", java.awt.Font.BOLD, 30)
       border = BorderFactory.createMatteBorder(5,5,5,5,Color.black)
       foreground = Color.red
@@ -362,7 +362,10 @@ object  Tetris extends SimpleSwingApplication{
     ---------------- Motors of the game ---------------
     ---------------------------------------------------- */
 
-  def RunningGame(): Unit = {
+def RunningGame(): Unit = {  
+    import java.lang.StringBuilder
+    val str = new StringBuilder()
+
     if (grid.canGoDown(p))
       grid.down(p)
     else {
@@ -379,15 +382,41 @@ object  Tetris extends SimpleSwingApplication{
       mainScore   += currentScore
       Interface.txtSCORE.text = mainScore.toString
 
+      /* send info to server currently with the class Paquets 
+      DOESN'T WORK
+      val paq1 = new Paquets("Score", top.pseudo, mainScore, stateGame)
+      LaunchClient.out.writeObject(paq1)
+      LaunchClient.out.flush()*/
+
+      
+
       p = p2
       p2 = grid.invoke
       if (!grid.isValid(p)) {
+
         //GAMEOVER
         println("!! Game Over !!")
         stateGame = 1
         top.labelGAMEOVER.opaque_=(true)
         top.labelGAMEOVER.visible_=(true)
         top.gridPanel.opaque_=(true)
+
+	/* send info to server with the class Paquets 
+	DOESN'T WORK
+	val paq = new Paquets("GAME OVER", top.pseudo, mainScore, stateGame)
+	LaunchClient.out.writeObject(paq)
+        LaunchClient.out.flush() 
+        LaunchClient.out.close()*/
+
+	// send info to server
+	val str = new StringBuilder()
+	str.append("GAME OVER;" + mainScore.toString)
+	LaunchClient.out.println(str)
+        LaunchClient.out.flush()  
+        LaunchClient.out.close()
+	
+        LaunchClient.SocketC.close
+
         timer.stop
       }
       grid.draw(p)
