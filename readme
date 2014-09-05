@@ -64,6 +64,7 @@ Sur l'interface, dans la partie "CONNEXION"
 Dans le premier TextField, taper l'adresse IP du server qui héberge la partie (ex en salle A406, 129.194.184.xxx)
 Dans le second TextField, taper le numéro de port indiqué dans le serveur (ici, 2014)
 Dans le dernier TextField, taper votre pseudonyme
+Appuyer sur le bouton "VALIDATE"
 
 Une fois que les deux joueurs sont connectés, le jeu se lance automatiquement sur chacun des clients.
 
