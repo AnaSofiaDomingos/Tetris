@@ -58,7 +58,7 @@ Taper sbt (patienter)
 Taper run
 Taper le numéro du fichier nommé "Client"
 
-SE CONNECTER AU SERVER
+SE CONNECTER AU SERVER DEPUIS LE CLIENT
 
 Sur l'interface, dans la partie "CONNEXION"
 Dans le premier TextField, taper l'adresse IP du server qui héberge la partie (ex en salle A406, 129.194.184.xxx)
