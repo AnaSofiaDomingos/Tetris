@@ -14,11 +14,13 @@ object LaunchClient extends App{
 	var port = (Tetris.Interface.port).toInt
 	var connected = isConnected
 
+	// check until not connected
 	while (!connected){
 		ip = Tetris.Interface.ip
 		port = (Tetris.Interface.port).toInt
 		connected = isConnected
 	}
+
 	var SocketC = new Socket()
 	var out : PrintWriter = null
 
@@ -28,24 +30,27 @@ object LaunchClient extends App{
 		println(InetAddress.getLocalHost())
 		SocketC = new Socket(ip, port)	
 
-		// Client connected	
+		// Client connected
+		// Receive infos from the server	
 		val in = new BufferedReader (new InputStreamReader (SocketC.getInputStream()))
 		val s : String = in.readLine()
 		if (s.startsWith("startGame"))
 			Tetris.startGame
 
+		// Send infos to the server by the client
 		val o = new PrintWriter(SocketC.getOutputStream(),true)
 		out = o
 		
-		// to use the class Paquets
-    		//val oos : ObjectOutputStream = new ObjectOutputStream(LaunchClient.SocketC.getOutputStream())
-		//out = oos
+		/* Send infos to the server by the client with the class Paquets
+		DOESN'T WORK
+    		val oos : ObjectOutputStream = new ObjectOutputStream(LaunchClient.SocketC.getOutputStream())
+		out = oos */
 
 	} catch {
 		case e: Exception => println("Exception caught: " + e)
 	}
 
-		
+	// check the connection	
 	def isConnected() = { if (ip != "129.194.184.xxx") true else false}
 	
 }

@@ -393,7 +393,6 @@ def RunningGame(): Unit = {
       p = p2
       p2 = grid.invoke
       if (!grid.isValid(p)) {
-
         //GAMEOVER
         println("!! Game Over !!")
         stateGame = 1
@@ -414,8 +413,6 @@ def RunningGame(): Unit = {
 	LaunchClient.out.println(str)
         LaunchClient.out.flush()  
         LaunchClient.out.close()
-	
-        LaunchClient.SocketC.close
 
         timer.stop
       }

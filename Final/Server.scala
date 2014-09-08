@@ -12,16 +12,16 @@ object LaunchServer extends App {
 
 class Server(port:Int) extends Thread {
 	
+	// ip of the server
 	import java.net.InetAddress
         val SAddress = InetAddress.getLocalHost()
         println("\nThe server address is : "+SAddress )
 
         ###
-	var NbClientConnect : Int = 1
 
 	var scoreFinal : ArrayList[Int] = new ArrayList[Int]()
 
-	// Server waiting for a connection
+	// Server waiting for a connection on the port
 	val SocketS = new ServerSocket(port)
 	println("Server listening on "+ SocketS.getLocalPort())
 
@@ -31,8 +31,7 @@ class Server(port:Int) extends Thread {
 			while (true){
 				val game = new Game
 		      		
-				// Server accepting the client	
-
+				// Server accepting the clients	
 				val SocketP1 = SocketS.accept()
 				val Player1 = new game.Player(SocketP1, LaunchClient.user)
 				println("player 1 connected")
@@ -41,22 +40,21 @@ class Server(port:Int) extends Thread {
 				val Player2 = new game.Player(SocketP2, LaunchClient.user) 
 				println("player 2 connected")
 		
+				// the 2 players starts playing
 				Player1.start
 				Player2.start
 
-				// Server closin
+				
 				while(true){
+					// Read the infos from the client
 					Read(SocketP1, 1)
 					Read(SocketP2, 2)
 
 					// check the winner
 					if (scoreFinal.size() == 2) {
-						
-						for (i <- 1 until 3)
-							println(scoreFinal.get(i))
+						val winnerS = Win(scoreFinal)
 
-						val winnerS = Win(scoreFinal)	
-						println(winnerS)
+						// change the label GameOver to winner or looser
 						for (i <- 1 until scoreFinal.size()){
 							if (scoreFinal.get(i) == winnerS){
 								println("WINNER")
@@ -66,9 +64,11 @@ class Server(port:Int) extends Thread {
 								println("LOOSER")
 							}	
 						}
+						// closing the sockets client
+        					LaunchClient.SocketC.close
 					}
 				}
-				
+				// closing the sockets server
 				SocketS.close()
 
 				###
@@ -81,9 +81,11 @@ class Server(port:Int) extends Thread {
 	def ### = println("##################################################\n")
 
 	def Read(socket  : Socket , id : Int) = {
+		// Receive infos from the client
 		val in = new BufferedReader (new InputStreamReader (socket.getInputStream()))
 		if (in.ready()){
 			val s : String = in.readLine()
+			// put the scores in a list to check the winner
 			if (s.startsWith("GAME OVER")){
 				for (score <- s.split(";", 2)){	
 					if (score != "GAME OVER") {
@@ -96,6 +98,7 @@ class Server(port:Int) extends Thread {
 
 	def Win(score : ArrayList[Int]) : Int = {
 		var max : Int = 0
+		// check foreach scores who is the best one
 		for (i <- 1 until score.size()){
 			if (score.get(i) > max)	
 				max = score.get(i)
@@ -104,7 +107,7 @@ class Server(port:Int) extends Thread {
 	}
 
 
-	/* read data with the class 
+	/* read data with the class Paquets 
 	DOESN'T WORK
 	def Read(socket  : Socket , id : Int) = {
 		val in = new ObjectInputStream(socket.getInputStream())
@@ -137,13 +140,17 @@ class Server(port:Int) extends Thread {
 
 class Game {
 
+	// thread permits the player to play
 	class Player(socket : Socket , user : String) extends Thread {
 		
 		override def run() = {
 			try {	
+				// Send infos to the client
 				val output = new PrintWriter(socket.getOutputStream(), true)
+				// say to the client that he can play
 				output.println("startGame")
 				output.flush()
+				output.close()
 			}catch {
 				case e: Exception => println("Exception caught: " + e)
 			}
